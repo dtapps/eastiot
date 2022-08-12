@@ -1,11 +1,12 @@
 package eastiot
 
 import (
+	"context"
 	"go.dtapp.net/gorequest"
 	"time"
 )
 
-func (c *Client) request(url string, params map[string]interface{}, method string) (gorequest.Response, error) {
+func (c *Client) request(ctx context.Context, url string, params map[string]interface{}, method string) (gorequest.Response, error) {
 
 	// 公共参数
 	params["appId"] = c.config.AppId
@@ -37,7 +38,7 @@ func (c *Client) request(url string, params map[string]interface{}, method strin
 
 	// 日志
 	if c.config.PgsqlDb != nil {
-		go c.log.GormMiddleware(request)
+		go c.log.GormMiddleware(ctx, request, version)
 	}
 	if c.config.MongoDb != nil {
 		go c.log.MongoMiddleware(request)

@@ -7,3 +7,5 @@ const (
 const (
 	logTable = "eastiot"
 )
+
+const version = "1.0.1"

@@ -6,5 +6,5 @@ const (
 
 const (
 	LogTable = "eastiot"
-	Version  = "1.0.8"
+	Version  = "1.0.10"
 )

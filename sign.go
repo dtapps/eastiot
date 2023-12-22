@@ -1,14 +1,14 @@
 package eastiot
 
 import (
-	"encoding/json"
 	"fmt"
 	"go.dtapp.net/gomd5"
+	"go.dtapp.net/gorequest"
+	"go.dtapp.net/gostring"
 	"sort"
-	"strconv"
 )
 
-func (c *Client) getSign(p map[string]interface{}) string {
+func (c *Client) getSign(p gorequest.Params) string {
 	var keys []string
 	for k := range p {
 		keys = append(keys, k)
@@ -16,22 +16,8 @@ func (c *Client) getSign(p map[string]interface{}) string {
 	sort.Strings(keys)
 	signStr := ""
 	for _, key := range keys {
-		signStr += fmt.Sprintf("%s=%s&", key, c.getString(p[key]))
+		signStr += fmt.Sprintf("%s=%s&", key, gostring.GetString(p.Get(key)))
 	}
 	signStr += fmt.Sprintf("apiKey=%s", c.GetApiKey())
 	return gomd5.ToUpper(signStr)
-}
-
-func (c *Client) getString(i interface{}) string {
-	switch v := i.(type) {
-	case string:
-		return v
-	case int:
-		return strconv.Itoa(v)
-	case bool:
-		return strconv.FormatBool(v)
-	default:
-		bytes, _ := json.Marshal(v)
-		return string(bytes)
-	}
 }

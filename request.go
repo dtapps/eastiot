@@ -6,17 +6,17 @@ import (
 	"time"
 )
 
-func (c *Client) request(ctx context.Context, url string, params map[string]interface{}, method string) (gorequest.Response, error) {
+func (c *Client) request(ctx context.Context, url string, param gorequest.Params, method string) (gorequest.Response, error) {
 
 	// 公共参数
-	params["appId"] = c.GetAppId()
-	params["timeStamp"] = time.Now().Unix()
+	param.Set("appId", c.GetAppId())
+	param.Set("timeStamp", time.Now().Unix())
 
 	// 签名
-	params["sign"] = c.getSign(params)
+	param.Set("sign", c.getSign(param))
 
 	// 创建请求
-	client := c.requestClient
+	client := gorequest.NewHttp()
 
 	// 设置请求地址
 	client.SetUri(url)
@@ -27,8 +27,11 @@ func (c *Client) request(ctx context.Context, url string, params map[string]inte
 	// 设置格式
 	client.SetContentTypeForm()
 
+	// 设置用户代理
+	client.SetUserAgent(gorequest.GetRandomUserAgentSystem())
+
 	// 设置参数
-	client.SetParams(params)
+	client.SetParams(param)
 
 	// 发起请求
 	request, err := client.Request(ctx)
@@ -37,8 +40,8 @@ func (c *Client) request(ctx context.Context, url string, params map[string]inte
 	}
 
 	// 记录日志
-	if c.log.status {
-		go c.log.client.Middleware(ctx, request, Version)
+	if c.gormLog.status {
+		go c.gormLog.client.Middleware(ctx, request)
 	}
 
 	return request, err

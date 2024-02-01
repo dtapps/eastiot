@@ -1,5 +1,5 @@
 <h1>
-<a href="https://www.dtapp.net/">Golang eastiot</a>
+<a href="https://www.dtapp.net/">Golang</a>
 </h1>
 
 📦 Golang eastiot
